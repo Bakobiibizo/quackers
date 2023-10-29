@@ -35,6 +35,7 @@ class ShappieClient(discord.Client):
                     "allowed_channels": guild["allowed_channels"],
                     "reference_channel": guild["reference_channel"],
                 }
+        self.load_extension('dismusic')
 
     async def add_nodes(self):
         await self.pool.create_nodes(
