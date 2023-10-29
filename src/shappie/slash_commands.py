@@ -2,25 +2,21 @@ import nextcord
 from nextcord.ext import commands
 import mafic
 import os
+import dotenv
+
 from bot import ShappieClient
 
-bot = commands.Bot(command_prefix="!", intents=nextcord.Intents.all())
+bot = commands.Bot(intents=nextcord.Intents.all(), command_prefix=commands.when_mentioned_or("/"))
 
+bot.lavalink_nodes = [
+    {"host": "lavalink.oryzen.xyz", "port": 1262, "password": "discord.gg/6xpF6YqVDd"},
+    # Can have multiple nodes here
+]
+bot.spotify_credentials = {
+    
+    'client_id': os.environ.get('CLIENT_ID'),
+    'client_secret': os.environ.get('CLIENT_SECRET'),
+    
+}
 
-@bot.slash_command(dm_permission=False)
-async def play(inter: nextcord.Interaction, query: str):
-    if not inter.guild.voice_client:
-        player = await inter.user.voice.channel.connect(cls=mafic.Player)
-    else:
-        player = inter.guild.voice_client
-
-    tracks = await player.fetch_tracks(query)
-
-    if not tracks:
-        return await inter.send("No tracks found.")
-
-    track = tracks[0]
-
-    await player.play(track)
-
-    await inter.send(f"Playing {track.title}.")
+# No need to add the Music cog here as it will be added when the 'dismusic' extension is loaded
